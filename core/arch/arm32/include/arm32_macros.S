@@ -25,7 +25,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-        /* Please keep them sorted based on the CRn register */
+	/* Please keep them sorted based on the CRn register */
 	.macro read_mpidr reg
 	mrc	p15, 0, \reg, c0, c0, 5
 	.endm
@@ -52,6 +52,10 @@
 
 	.macro write_dacr reg
 	mcr	p15, 0, \reg, c3, c0, 0
+	.endm
+
+	.macro read_dfsr reg
+	mrc	p15, 0, \reg, c5, c0, 0
 	.endm
 
 	.macro write_iciallu

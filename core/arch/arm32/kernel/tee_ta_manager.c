@@ -48,7 +48,6 @@
 #include <kernel/tee_rpc.h>
 #include <kernel/tee_rpc_types.h>
 #include <kernel/mutex.h>
-#include <tee/tee_hash.h>
 #include <tee/tee_obj.h>
 #include <tee/tee_svc_storage.h>
 #include <kernel/tee_time.h>
@@ -509,7 +508,8 @@ static TEE_Result tee_ta_load_user_ta(struct tee_ta_ctx *ctx,
 	/*
 	 * Allocate heap and stack
 	 */
-	ctx->mm_heap_stack = tee_mm_alloc(&tee_mm_sec_ddr, *heap_size + ctx->stack_size);
+	ctx->mm_heap_stack = tee_mm_alloc(&tee_mm_sec_ddr,
+					*heap_size + ctx->stack_size);
 	if (!ctx->mm_heap_stack) {
 		EMSG("Failed to allocate %u bytes\n", SECTION_SIZE);
 		EMSG("  of memory for user heap and stack\n");
@@ -877,7 +877,7 @@ static TEE_Result tee_ta_rpc_load(const TEE_UUID *uuid,
 
 	/* get a rpc buffer */
 	pharg = thread_rpc_alloc_arg(TEESMC32_GET_ARG_SIZE(2));
-	thread_st_rpc_alloc_payload(sizeof(struct tee_rpc_load_ta_cmd),
+	thread_optee_rpc_alloc_payload(sizeof(struct tee_rpc_load_ta_cmd),
 				   &phpayload, &cookie);
 	if (!pharg || !phpayload) {
 		*ret_orig = TEE_ORIGIN_TEE;
@@ -936,7 +936,7 @@ static TEE_Result tee_ta_rpc_load(const TEE_UUID *uuid,
 
 out:
 	thread_rpc_free_arg(pharg);
-	thread_st_rpc_free_payload(cookie);
+	thread_optee_rpc_free_payload(cookie);
 	return res;
 }
 
